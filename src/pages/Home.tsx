@@ -23,9 +23,12 @@ const Home = () => {
     };
   };
 
-  const searchFilter = (value) => {
+  const searchFilter = (value, status) => {
     const filtered = users.filter((user) => {
-      if (user.name.toLowerCase().includes(value)) {
+      if (
+        user.name.toLowerCase().includes(value) &&
+        (user.status === status || status === "all")
+      ) {
         return user;
       }
       return false;
@@ -40,36 +43,27 @@ const Home = () => {
       return;
     }
     if (value === "") {
-      const statusfilter = handleFilter(status);
+      const statusfilter = searchFilter("", status);
       setFilteredList(statusfilter);
       return;
     }
     setSearch(value);
-    const newList = searchFilter(value);
+    const newList = searchFilter(value, status);
     setFilteredList(newList);
     // debounce(() => {
     //   console.log("val", e.target.value);
     // }, 500);
   };
 
-  const handleFilter = (status) => {
-    return filteredList.filter((user) => {
-      if (user.status === status) {
-        return user;
-      }
-      return false;
-    });
-  };
-
   const handleStatusOptions = (e) => {
     setStatus(e.target.value);
-    const value = e.target.value;
+    const statusValue = e.target.value;
 
-    if (value === "all") {
+    if (statusValue === "all" && search !== "") {
       setFilteredList(users);
       return;
     }
-    const status = handleFilter(value);
+    const status = searchFilter(search, statusValue);
     setFilteredList(status);
   };
 
